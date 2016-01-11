@@ -1,0 +1,25 @@
+{
+  "name": "type-factory",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dbrekalo/type-factory",
+  "authors": [
+    "Damir Brekalo <dbrekalo@gmail.com>"
+  ],
+  "description": "Simple and convenient generator of prototype based constructor functions",
+  "main": "dist/type-factory.min.js",
+  "keywords": [
+    "prototype",
+    "classes",
+    "generator",
+    "factory",
+    "constructor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
