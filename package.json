@@ -1,7 +1,12 @@
 {
   "name": "type-factory",
-  "version": "1.0.0",
-  "main": "src/type-factory.js",
+  "version": "1.0.1",
+  "description": "Simple and convenient generator of prototype based constructor functions",
+  "author": {
+    "email": "dbrekalo@gmail.com",
+    "name": "Damir Brekalo"
+  },
+  "main": "src/typeFactory.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/dbrekalo/type-factory"
