@@ -10,15 +10,13 @@
 
 }(this, function() {
 
-    function extend(extendingObject) {
+    function transferProperties(destination, source) {
 
-        for (var i = 1; i < arguments.length; i++) {
-            for (var key in arguments[i]) {
-                arguments[i].hasOwnProperty(key) && (extendingObject[key] = arguments[i][key]);
-            }
+        for (var key in source) {
+            source.hasOwnProperty(key) && (destination[key] = source[key]);
         }
 
-        return extendingObject;
+        return destination;
 
     }
 
@@ -40,11 +38,11 @@
             Surrogate.prototype = parentType.prototype;
             generatedType.prototype = new Surrogate();
 
-            extend(generatedType, parentType);
+            transferProperties(generatedType, parentType);
         }
 
-        extend(generatedType, staticProperties);
-        extend(generatedType.prototype, prototypeProperties);
+        staticProperties && transferProperties(generatedType, staticProperties);
+        prototypeProperties && transferProperties(generatedType.prototype, prototypeProperties);
 
         return generatedType;
 
