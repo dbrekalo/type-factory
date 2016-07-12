@@ -4,77 +4,120 @@ var assert = require("chai").assert;
 var typeFactory = require("../");
 
 var Person = typeFactory({
-  initialize: function(name) {
-  },
-  sayHi: function() {
-  },
-  play: function() {
-  }
-  }, {
-  staticProperty: function() {
-  }
+
+    initialize: function(name, surname) {
+        this.name = name;
+        this.surname = surname;
+    },
+
+    sayHi: function() {
+    },
+
+    }, {
+    staticProperty: function() {
+    }
 });
 
-var Musician = Person.extend({
-  play: function() { }
+describe("typefactory", function() {
+
+    it('defines constructor function', function () {
+
+        assert.equal(Person.prototype.constructor, Person);
+
+    });
+
+    it("attaches prototype methods to constructor", function() {
+
+        assert.isFunction(Person.prototype.sayHi);
+
+    });
+
+    it("attaches static methods to constructor", function() {
+
+        assert.isFunction(Person.staticProperty);
+
+    });
+
+    it("passes arguments to initialize function", function() {
+
+        var person = new Person('John', 'Doe');
+        assert.equal(person.name, 'John');
+        assert.equal(person.surname, 'Doe');
+
+    });
+
+    it("creates objects as instance of constructor function", function() {
+
+        var peter = new Person();
+        assert.instanceOf(peter, Person);
+
+    });
+
 });
 
-describe("constructor", function() {
+describe("typeFactory extend", function() {
 
-  it('sets constructor as the children', function () {
-
-    assert.equal(Person.prototype.constructor, Person);
-
-  });
-
-  it("assigns prototype methods to constructor", function() {
-
-    assert.ok(Person.prototype.sayHi);
-
-  });
-
-  it("assigns static property to constructor", function() {
-
-    assert.ok(Person.staticProperty);
-
-  });
-
-});
-
-describe("extending types", function() {
-
-  it("creates type that is instance of constructor function", function() {
-
-    var peter = new Person('Peter');
-    assert.instanceOf(peter, Person);
-
-  });
-
-  it('assigns prototype methods to extended type', function () {
-
-    var peter = new Person('peter');
-    assert.instanceOf(peter, Person);
-    assert.equal(Person.prototype.sayHi, peter.sayHi);
-
-  });
-
-  it('does not pass static method to extended type', function () {
-
-    var peter = new Person('peter');
-    assert.notOk(peter.staticProperty);
-
-  });
-
-  it("creates further extended type", function() {
+    var Musician = Person.extend({sayHi: function() {}});
+    var Guitarist = Musician.extend({
+        constructor: function(nickname) {
+            this.nickname = nickname;
+        },
+        playSolo: function() {}
+    }, {
+        gatherOnStage: function() {}
+    });
 
     var jimmi = new Musician('Jimmi');
+    var george = new Guitarist('George');
 
-    assert.instanceOf(jimmi, Person);
-    assert.instanceOf(jimmi, Musician);
-    assert.equal(jimmi.sayHi, Person.prototype.sayHi);
-    assert.property(jimmi, 'play');
-    assert.notEqual(Person.prototype.play, jimmi.play);
+    it("enables extending types", function() {
 
-  });
+        assert.instanceOf(jimmi, Person);
+        assert.instanceOf(jimmi, Musician);
+
+        assert.instanceOf(george, Person);
+        assert.instanceOf(george, Musician);
+        assert.instanceOf(george, Guitarist);
+
+    });
+
+    it("assigns parent methods to types", function() {
+
+        assert.isFunction(Musician.prototype.initialize);
+
+    });
+
+    it("assigns new instance methods to types", function() {
+
+        assert.isFunction(george.playSolo);
+
+    });
+
+    it("allows types to preserve parent static properties", function() {
+
+        assert.isFunction(Musician.staticProperty);
+        assert.isFunction(Guitarist.staticProperty);
+
+    });
+
+    it("assigns new static properties", function() {
+
+        assert.isFunction(Guitarist.gatherOnStage);
+
+    });
+
+    it("allows overridden methods", function() {
+
+        assert.notEqual(jimmi.sayHi, Person.prototype.sayHi);
+
+    });
+
+    it("allows overriding constructor property", function() {
+
+        assert.equal(jimmi.name, 'Jimmi');
+        assert.isUndefined(george.name);
+        assert.equal(george.nickname, 'George');
+
+    });
 
 });

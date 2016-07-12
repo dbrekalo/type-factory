@@ -12,7 +12,9 @@
     "url": "https://github.com/dbrekalo/type-factory"
   },
   "scripts": {
-    "coverage": "istanbul cover _mocha -- -R spec"
+    "test": "mocha --reporter spec",
+    "coverage": "istanbul cover _mocha -- -R spec",
+    "coverageReport": "npm run coverage && open coverage/lcov-report/*.html"
   },
   "devDependencies": {
     "chai": "^3.5.0",
