@@ -12,6 +12,8 @@
     "url": "https://github.com/dbrekalo/type-factory"
   },
   "scripts": {
+    "build": "npm test && grunt build",
+    "watch": "grunt build && grunt watch",
     "test": "mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec",
     "coverageReport": "npm run coverage && open coverage/lcov-report/*.html"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-copy": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.6.0",

@@ -1,6 +1,4 @@
-var expect = require("chai").expect;
 var assert = require("chai").assert;
-
 var typeFactory = require("../");
 
 var Person = typeFactory({
