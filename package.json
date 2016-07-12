@@ -1,6 +1,6 @@
 {
   "name": "type-factory",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple and convenient generator of prototype based constructor functions",
   "author": {
     "email": "dbrekalo@gmail.com",
@@ -16,10 +16,12 @@
     "watch": "grunt build && grunt watch",
     "test": "mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec",
-    "coverageReport": "npm run coverage && open coverage/lcov-report/*.html"
+    "coverageReport": "npm run coverage && open coverage/lcov-report/*.html",
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.11",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-copy": "^0.6.0",
@@ -30,6 +32,7 @@
     "grunt-jscs": "^1.5.0",
     "istanbul": "^0.4.4",
     "load-grunt-tasks": "^0.6.0",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "mocha-lcov-reporter": "^1.2.0"
   }
 }
