@@ -6,33 +6,46 @@
     "email": "dbrekalo@gmail.com",
     "name": "Damir Brekalo"
   },
+  "license": "MIT",
   "main": "src/typeFactory.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/dbrekalo/type-factory"
   },
   "scripts": {
-    "build": "npm test && grunt build",
-    "watch": "grunt build && grunt watch",
+    "watch": "grunt",
+    "build": "grunt build",
     "test": "mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec",
     "coverageReport": "npm run coverage && open coverage/lcov-report/*.html",
-    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "bump:patch": "grunt bump:patch",
+    "bump:minor": "grunt bump:minor",
+    "bump:major": "grunt bump:major"
   },
+  "keywords": [
+    "type-factory",
+    "types",
+    "factory",
+    "extend",
+    "type-checker",
+    "constructor",
+    "class",
+    "generator"
+  ],
   "devDependencies": {
-    "chai": "^3.5.0",
-    "coveralls": "^2.11.11",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-copy": "^0.6.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-uglify": "^0.6.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-include-replace": "^3.2.0",
-    "grunt-jscs": "^1.5.0",
-    "istanbul": "^0.4.4",
-    "load-grunt-tasks": "^0.6.0",
-    "mocha": "^2.5.3",
-    "mocha-lcov-reporter": "^1.2.0"
+    "attire": "^1.3.2",
+    "chai": "^4.1.2",
+    "coveralls": "^2.11.15",
+    "grunt": "^1.0.1",
+    "grunt-bump": "^0.8.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-eslint": "^20.1.0",
+    "istanbul": "^0.4.5",
+    "load-grunt-tasks": "^3.5.2",
+    "mocha": "^3.2.0"
   }
 }

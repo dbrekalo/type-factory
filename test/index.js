@@ -2,7 +2,6 @@ var assert = require("chai").assert;
 var typeFactory = require("../");
 
 var Person = typeFactory({
-
     initialize: function(name, surname) {
         this.name = name;
         this.surname = surname;
@@ -16,7 +15,7 @@ var Person = typeFactory({
     }
 });
 
-describe("typefactory", function() {
+describe("typeFactory", function() {
 
     it('defines constructor function', function () {
 
@@ -91,7 +90,7 @@ describe("typeFactory extend", function() {
 
     });
 
-    it("allows types to preserve parent static properties", function() {
+    it("allows types to inherit parent static properties", function() {
 
         assert.isFunction(Musician.staticProperty);
         assert.isFunction(Guitarist.staticProperty);
@@ -115,6 +114,156 @@ describe("typeFactory extend", function() {
         assert.equal(jimmi.name, 'Jimmi');
         assert.isUndefined(george.name);
         assert.equal(george.nickname, 'George');
+
+    });
+
+});
+
+describe("typeFactory defaults", function() {
+
+    it("can be defined vith object literal", function() {
+
+        var Musician = Person.extend({
+            assignOptions: true,
+            defaults: {isFrontMen: false}
+        });
+
+        assert.isDefined(new Musician().options);
+        assert.isFalse(new Musician().options.isFrontMen);
+
+        assert.deepEqual(new Musician({
+            isFrontMen: true,
+            playsInstrument: 'guitar'
+        }).options, {
+            isFrontMen: true,
+            playsInstrument: 'guitar'
+        });
+
+        assert.deepEqual(new Musician({
+            isFrontMen: undefined,
+            foo: {bar: 'test'}
+        }).options, {
+            isFrontMen: false,
+            foo: {bar: 'test'}
+        });
+
+    });
+
+    it("can be defined vith function returning object literal", function() {
+
+        var Musician = Person.extend({
+            assignOptions: true,
+            defaults: function() {
+              return {isFrontMen: false};
+            }
+        });
+
+        assert.isFalse(new Musician().options.isFrontMen);
+
+    });
+
+});
+
+describe("typeFactory option rules", function() {
+
+    it('type check provided options', function() {
+
+        var Guitarist = Person.extend({
+            assignOptions: true,
+            optionRules: {
+                name: {type: 'string'},
+                instrument: {type: 'string', required: false},
+            }
+        });
+
+        assert.throws(function() {
+            new Guitarist();
+        }, 'Option "name" is undefined, expected string.');
+
+        assert.throws(function() {
+            new Guitarist({
+                name: 'George',
+                instrument: 42
+            });
+        }, 'Option "instrument" is number, expected string.');
+
+    });
+
+    it('validate options with rule callback', function() {
+
+        var Guitarist = typeFactory({
+            assignOptions: true,
+            optionRules: {
+                age: {type: 'number', rule: function(age) {
+                    return age > 18;
+                }}
+            }
+        });
+
+        var GuitarPro = Guitarist.extend();
+
+        assert.throws(function() {
+            new Guitarist({
+                age: 'teen'
+            });
+        }, 'Option "age" is string, expected number. Option "age" breaks defined rule.');
+
+        assert.throws(function() {
+            new GuitarPro({
+                age: 15
+            });
+        }, 'Option "age" breaks defined rule.');
+
+    });
+
+    it('do option instance of checks', function() {
+
+        var Guitarist = Person.extend({
+            assignOptions: true,
+            optionRules: {
+                mentor: {instanceOf: Person}
+            }
+        });
+
+        var mentor = new Person();
+
+        assert.throws(function() {
+            new Guitarist({
+                mentor: 'pero'
+            });
+        }, 'Option "mentor" is not instance of defined constructor.');
+
+        assert.throws(function() {
+            new Guitarist({
+                mentor: new Date()
+            });
+        }, 'Option "mentor" is not instance of defined constructor.');
+
+        assert.throws(function() {
+            new Guitarist();
+        }, 'Option "mentor" is not instance of defined constructor.');
+
+    });
+
+    it('merge default values', function() {
+
+        var Guitarist = Person.extend({
+            assignOptions: true,
+            defaults: {
+                instrument: 'guitar'
+            },
+            optionRules: {
+                name: {type: 'string', default: ''},
+                instrument: {type: 'string'},
+                age: {type: 'number', default: 18}
+            }
+        });
+
+        assert.deepEqual(new Guitarist().options, {
+            name: '',
+            instrument: 'guitar',
+            age: 18
+        });
 
     });
 
