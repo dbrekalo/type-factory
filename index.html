@@ -34,7 +34,7 @@ var peter = new Musician('Peter');
 
 peter.sayHi(); // outputs 'Hello, my name is Peter'
 peter.play(); // outputs 'Peter is playing!'
-</code></pre><hr class="attireSeparator mod1"><h3 id="setting-defaults" class="attireTitleType3">Setting defaults</h3><p class="attireTextType2">Default options can be set when defining type. Defaults will be merged with options provided to constructor. Sometimes it is convienent to list all parameters your type depends on:</p><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
+</code></pre><hr class="attireSeparator mod1"><h3 id="setting-option-defaults" class="attireTitleType3">Setting option defaults</h3><p class="attireTextType2">Default options can be set when defining type. Defaults will be merged with options provided to constructor. Sometimes it is convenient to list all parameters your type depends on:</p><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
     assignOptions: true,
     defaults: {
         instrument: 'guitar'
@@ -45,9 +45,8 @@ peter.play(); // outputs 'Peter is playing!'
 
 var peter = new Musician({age: 18});
 
-// outputs {instrument: 'guitar', age: 18}
-console.log(peter.options)
-</code></pre><hr class="attireSeparator mod1"><h3 id="parameters-type-checking-and-validation" class="attireTitleType3">Parameters type checking and validation</h3><p class="attireTextType2">Options provided by type defaults and and constructor parameters can be type checked.</p><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
+console.log(peter.options); // outputs {instrument: 'guitar', age: 18}
+</code></pre><hr class="attireSeparator mod1"><h3 id="options-type-checking-and-validation" class="attireTitleType3">Options type checking and validation</h3><p class="attireTextType2">Options provided by type defaults and and constructor parameters can be type checked.</p><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
     assignOptions: true,
     optionRules: {
         instrument: {type: 'string'},
@@ -56,8 +55,8 @@ console.log(peter.options)
 });
 
 // will throw error -&gt; age should be a number
-new Person({age: 'adult'});
-</code></pre><p class="attireTextType2">Option rules can be configured to do following</p><ul class="attireListType1"><li>set expectations for parameter typeof check via "type" key.</li><li>define default value via "default" property</li><li>require parameter to pass instanceof check via "instanceOf" key</li><li>defined custom validation logic via callback under "rule" key</li></ul><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
+new Musician({age: 'adult'});
+</code></pre><p class="attireTextType2">Option rules can be configured to do following:</p><ul class="attireListType1"><li>set expectations for parameter typeof check via "type" key.</li><li>define default value via "default" property</li><li>require parameter to pass instanceof check via "instanceOf" key</li><li>defined custom validation logic via callback under "rule" key</li></ul><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
     assignOptions: true,
     optionRules: {
         instrument: {type: 'string'},

@@ -72,9 +72,9 @@ peter.play(); // outputs 'Peter is playing!'
 ```
 ---
 
-### Setting defaults
+### Setting option defaults
 Default options can be set when defining type. Defaults will be merged with options provided to constructor.
-Sometimes it is convienent to list all parameters your type depends on:
+Sometimes it is convenient to list all parameters your type depends on:
 
 ```js
 var Musician = Person.extend({
@@ -88,12 +88,11 @@ var Musician = Person.extend({
 
 var peter = new Musician({age: 18});
 
-// outputs {instrument: 'guitar', age: 18}
-console.log(peter.options)
+console.log(peter.options); // outputs {instrument: 'guitar', age: 18}
 ```
 ---
 
-### Parameters type checking and validation
+### Options type checking and validation
 Options provided by type defaults and and constructor parameters can be type checked.
 
 ```js
@@ -106,10 +105,10 @@ var Musician = Person.extend({
 });
 
 // will throw error -> age should be a number
-new Person({age: 'adult'});
+new Musician({age: 'adult'});
 
 ```
-Option rules can be configured to do following
+Option rules can be configured to do following:
 * set expectations for parameter typeof check via "type" key.
 * define default value via "default" property
 * require parameter to pass instanceof check via "instanceOf" key
