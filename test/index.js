@@ -55,6 +55,7 @@ describe("typeFactory", function() {
 describe("typeFactory extend", function() {
 
     var Musician = Person.extend({sayHi: function() {}});
+    var JustAnotherPerson = Person.extend();
     var Guitarist = Musician.extend({
         constructor: function(nickname) {
             this.nickname = nickname;
@@ -66,11 +67,15 @@ describe("typeFactory extend", function() {
 
     var jimmi = new Musician('Jimmi');
     var george = new Guitarist('George');
+    var nobody = new JustAnotherPerson();
 
     it("enables extending types", function() {
 
         assert.instanceOf(jimmi, Person);
         assert.instanceOf(jimmi, Musician);
+
+        assert.instanceOf(nobody, Person);
+        assert.instanceOf(nobody, JustAnotherPerson);
 
         assert.instanceOf(george, Person);
         assert.instanceOf(george, Musician);
@@ -121,7 +126,7 @@ describe("typeFactory extend", function() {
 
 describe("typeFactory defaults", function() {
 
-    it("can be defined vith object literal", function() {
+    it("can be defined with object literal", function() {
 
         var Musician = Person.extend({
             assignOptions: true,
@@ -164,105 +169,205 @@ describe("typeFactory defaults", function() {
 
 });
 
-describe("typeFactory option rules", function() {
+describe('typeFactory option rules', function() {
 
-    it('type check provided options', function() {
+    var TypedView = typeFactory({
+        assignOptions: true
+    });
 
-        var Guitarist = Person.extend({
-            assignOptions: true,
-            optionRules: {
-                name: {type: 'string'},
-                instrument: {type: 'string', required: false},
-            }
-        });
+    it('type checks string options', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            name: String
+        }});
 
         assert.throws(function() {
             new Guitarist();
-        }, 'Option "name" is undefined, expected string.');
-
-        assert.throws(function() {
-            new Guitarist({
-                name: 'George',
-                instrument: 42
-            });
-        }, 'Option "instrument" is number, expected string.');
+        }, 'Invalid type for option "name" ("undefined").');
 
     });
 
-    it('validate options with rule callback', function() {
+    it('type checks respect rquired attribyte', function() {
 
-        var Guitarist = typeFactory({
-            assignOptions: true,
-            optionRules: {
-                age: {type: 'number', rule: function(age) {
-                    return age > 18;
-                }}
-            }
+        var Guitarist = TypedView.extend({optionRules: {
+            name: {type: String, required: false}
+        }});
+
+        assert.doesNotThrow(function() {
+            new Guitarist({foo: 'bar'});
         });
 
-        var GuitarPro = Guitarist.extend();
-
         assert.throws(function() {
-            new Guitarist({
-                age: 'teen'
-            });
-        }, 'Option "age" is string, expected number. Option "age" breaks defined rule.');
-
-        assert.throws(function() {
-            new GuitarPro({
-                age: 15
-            });
-        }, 'Option "age" breaks defined rule.');
+            new Guitarist({name: 47});
+        }, 'Invalid type for option "name" ("number").');
 
     });
 
-    it('do option instance of checks', function() {
+    it('type checks number options with custom validator', function() {
 
-        var Guitarist = Person.extend({
-            assignOptions: true,
-            optionRules: {
-                mentor: {instanceOf: Person}
-            }
+        var Guitarist = TypedView.extend({optionRules: {
+            age: {type: Number, validator: function(age) {
+                return age > 18;
+            }}}
         });
 
-        var mentor = new Person();
+        assert.throws(function() {
+            new Guitarist({age: '17'});
+        }, 'Invalid type for option "age" ("string").');
 
         assert.throws(function() {
-            new Guitarist({
-                mentor: 'pero'
-            });
-        }, 'Option "mentor" is not instance of defined constructor.');
+            new Guitarist({age: 15});
+        }, 'Validation of option "age" failed.');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({age: 20});
+        });
+
+    });
+
+    it('type checks boolean options', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            published: Boolean
+        }});
 
         assert.throws(function() {
-            new Guitarist({
-                mentor: new Date()
-            });
-        }, 'Option "mentor" is not instance of defined constructor.');
+            new Guitarist({published: 'yes'});
+        }, 'Invalid type for option "published" ("string").');
+
+    });
+
+    it('type checks function options', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            afterGig: Function
+        }});
 
         assert.throws(function() {
             new Guitarist();
-        }, 'Option "mentor" is not instance of defined constructor.');
+        }, 'Invalid type for option "afterGig" ("undefined").');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({afterGig: function() {}});
+        });
 
     });
 
-    it('merge default values', function() {
+    it('type checks object options', function() {
 
-        var Guitarist = Person.extend({
-            assignOptions: true,
+        var Guitarist = TypedView.extend({optionRules: {
+            data: Object
+        }});
+
+        assert.throws(function() {
+            new Guitarist({data: ''});
+        }, 'Invalid type for option "data" ("string").');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({data: {}});
+        });
+
+    });
+
+    it('type checks array options', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            data: Array
+        }});
+
+        assert.throws(function() {
+            new Guitarist({data: {}});
+        }, 'Invalid type for option "data" ("object").');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({data: [1, 2, 3]});
+        });
+
+    });
+
+    it('type checks date options', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            dateOfBirth: Date
+        }});
+
+        assert.throws(function() {
+            new Guitarist({dateOfBirth: '2017-05-05'});
+        }, 'Invalid type for option "dateOfBirth" ("string").');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({dateOfBirth: new Date()});
+        });
+
+    });
+
+    it('type checks custom constructors options', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            mentor: TypedView
+        }});
+
+        assert.throws(function() {
+            new Guitarist({mentor: {}});
+        }, 'Invalid type for option "mentor" ("object").');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({mentor: new TypedView()});
+        });
+
+        assert.doesNotThrow(function() {
+            var ExtendedView = TypedView.extend({});
+            new Guitarist({mentor: new ExtendedView()});
+        });
+
+    });
+
+    it('type checks multiple alowed types', function() {
+
+        var Guitarist = TypedView.extend({optionRules: {
+            url: {type: [String, Function]}
+        }});
+
+        var Lead = TypedView.extend({optionRules: {
+            url: [String, Function]
+        }});
+
+        assert.throws(function() {
+            new Guitarist({url: false});
+        }, 'Invalid type for option "url" ("boolean").');
+
+        assert.throws(function() {
+            new Lead({url: false});
+        }, 'Invalid type for option "url" ("boolean").');
+
+        assert.doesNotThrow(function() {
+            new Guitarist({url: 'test'});
+            new Guitarist({url: function() { return 'test'; }});
+            new Lead({url: 'test'});
+            new Lead({url: function() { return 'test'; }});
+        });
+
+    });
+
+    it('merges default values with rule options defaults', function() {
+
+        var Guitarist = TypedView.extend({
             defaults: {
-                instrument: 'guitar'
+                instrument: 'guitar',
+                dateOfBirth: '1985-01-01'
             },
             optionRules: {
-                name: {type: 'string', default: ''},
-                instrument: {type: 'string'},
-                age: {type: 'number', default: 18}
+                name: {type: String, default: ''},
+                instrument: {type: String},
+                age: {type: Number, default: 18}
             }
         });
 
         assert.deepEqual(new Guitarist().options, {
             name: '',
             instrument: 'guitar',
-            age: 18
+            age: 18,
+            dateOfBirth: '1985-01-01'
         });
 
     });

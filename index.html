@@ -49,8 +49,12 @@ console.log(peter.options); // outputs {instrument: 'guitar', age: 18}
 </code></pre><hr class="attireSeparator mod1"><h3 id="options-type-checking-and-validation" class="attireTitleType3">Options type checking and validation</h3><p class="attireTextType2">Options provided by type defaults and and constructor parameters can be type checked.</p><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
     assignOptions: true,
     optionRules: {
-        instrument: {type: 'string'},
-        age: {type: 'number', default: 18}
+        instrument: String,
+        age: {type: Number, default: 18, validator: function(age) {
+            return age &gt;= 18;
+        }},
+        mentor: {type: Musician, required: false}
+        url: [String, Function]
     }
 });
 

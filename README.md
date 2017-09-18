@@ -99,8 +99,12 @@ Options provided by type defaults and and constructor parameters can be type che
 var Musician = Person.extend({
     assignOptions: true,
     optionRules: {
-        instrument: {type: 'string'},
-        age: {type: 'number', default: 18}
+        instrument: String,
+        age: {type: Number, default: 18, validator: function(age) {
+            return age >= 18;
+        }},
+        mentor: {type: Musician, required: false}
+        url: [String, Function]
     }
 });
 
