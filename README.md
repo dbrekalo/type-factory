@@ -113,23 +113,10 @@ new Musician({age: 'adult'});
 
 ```
 Option rules can be configured to do following:
-* set expectations for parameter typeof check via "type" key.
+* set expectations for parameter type check via "type" key.
 * define default value via "default" property
-* require parameter to pass instanceof check via "instanceOf" key
-* defined custom validation logic via callback under "rule" key
-
-```js
-var Musician = Person.extend({
-    assignOptions: true,
-    optionRules: {
-        instrument: {type: 'string'},
-        age: {type: 'number', default: 18, rule: function(age) {
-            return age >= 18;
-        }},
-        mentor: {instanceOf: Person}
-    }
-});
-```
+* require option to be set via "required" key
+* defined custom validation logic via callback under "validator" key
 
 ## Installation
 

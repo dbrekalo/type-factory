@@ -60,17 +60,7 @@ console.log(peter.options); // outputs {instrument: 'guitar', age: 18}
 
 // will throw error -&gt; age should be a number
 new Musician({age: 'adult'});
-</code></pre><p class="attireTextType2">Option rules can be configured to do following:</p><ul class="attireListType1"><li>set expectations for parameter typeof check via "type" key.</li><li>define default value via "default" property</li><li>require parameter to pass instanceof check via "instanceOf" key</li><li>defined custom validation logic via callback under "rule" key</li></ul><pre class="attireCodeHighlight"><code class="lang-js">var Musician = Person.extend({
-    assignOptions: true,
-    optionRules: {
-        instrument: {type: 'string'},
-        age: {type: 'number', default: 18, rule: function(age) {
-            return age &gt;= 18;
-        }},
-        mentor: {instanceOf: Person}
-    }
-});
-</code></pre></div></section><section id="section-installation" class="attireBlock"><div class="inner"><h2 id="installation" class="attireTitleType2">Installation</h2><p class="attireTextType2">Type factory is packaged as UMD library so you can use it both on client and server (CommonJS and AMD environment) or with browser globals.</p><pre class="attireCodeHighlight"><code class="lang-`js">// install via npm
+</code></pre><p class="attireTextType2">Option rules can be configured to do following:</p><ul class="attireListType1"><li>set expectations for parameter type check via "type" key.</li><li>define default value via "default" property</li><li>require option to be set via "required" key</li><li>defined custom validation logic via callback under "validator" key</li></ul></div></section><section id="section-installation" class="attireBlock"><div class="inner"><h2 id="installation" class="attireTitleType2">Installation</h2><p class="attireTextType2">Type factory is packaged as UMD library so you can use it both on client and server (CommonJS and AMD environment) or with browser globals.</p><pre class="attireCodeHighlight"><code class="lang-`js">// install via npm
 npm install type-factory --save
 
 // if you use bundler
