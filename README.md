@@ -12,7 +12,6 @@ It weighs less than 2KB.
 
 Type factory is a small helper function by which a constructor function can be defined without the usual verbosity.
 Each generated type can be easily extended with no need for manual setup of prototype chain.
-Parameters passed to constructor can be merged with defaults, type checked and validated.
 Type factory can be used with bundlers or browser globals.
 
 ## Examples
@@ -40,7 +39,7 @@ john.sayHi(); // outputs 'Hello, my name is John'
 Same functionality with typeFactory would be achieved like so:
 ```js
 var Person = typeFactory({
-    initialize: function(name) {
+    constructor: function(name) {
         this.name = name;
     },
     sayHi: function() {
@@ -72,57 +71,11 @@ peter.play(); // outputs 'Peter is playing!'
 ```
 ---
 
-### Setting option defaults
-Default options can be set when defining type. Defaults will be merged with options provided to constructor.
-Sometimes it is convenient to list all parameters your type depends on:
-
-```js
-var Musician = Person.extend({
-    assignOptions: true,
-    defaults: {
-        instrument: 'guitar'
-        age: undefined
-        mentor: undefined
-    }
-});
-
-var peter = new Musician({age: 18});
-
-console.log(peter.options); // outputs {instrument: 'guitar', age: 18}
-```
----
-
-### Options type checking and validation
-Options provided by type defaults and and constructor parameters can be type checked.
-
-```js
-var Musician = Person.extend({
-    assignOptions: true,
-    optionRules: {
-        instrument: String,
-        age: {type: Number, default: 18, validator: function(age) {
-            return age >= 18;
-        }},
-        mentor: {type: Musician, required: false}
-        url: [String, Function]
-    }
-});
-
-// will throw error -> age should be a number
-new Musician({age: 'adult'});
-
-```
-Option rules can be configured to do following:
-* set expectations for parameter type check via "type" key.
-* define default value via "default" property
-* require option to be set via "required" key
-* defined custom validation logic via callback under "validator" key
-
 ## Installation
 
 Type factory is packaged as UMD library so you can use it both on client and server (CommonJS and AMD environment) or with browser globals.
 
-````js
+```js
 // install via npm
 npm install type-factory --save
 
