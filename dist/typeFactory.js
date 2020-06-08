@@ -1,70 +1,56 @@
-(function(root, factory) {
-    /* istanbul ignore next */
-    if (typeof define === 'function' && define.amd) {
-        define([], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory();
-    } else {
-        root.typeFactory = factory();
-    }
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = global || self, global.typeFactory = factory());
+}(this, (function () { 'use strict';
 
-}(this, function() {
+    function factory(ParentType, prototypeProperties, staticProperties) {
 
-    function factory(parentType, prototypeProperties, staticProperties) {
-
-        var generatedType = prototypeProperties && prototypeProperties.hasOwnProperty('constructor')
+        var GeneratedType = prototypeProperties && hasOwn(prototypeProperties, 'constructor')
             ? prototypeProperties.constructor
-            : function() {
-
-                if (parentType) {
-                    parentType.apply(this, arguments);
-                }
-
-            }
+            : function() { ParentType && ParentType.apply(this, arguments); }
         ;
 
-        if (parentType) {
-
-            var Surrogate = function() { this.constructor = generatedType; };
-            Surrogate.prototype = parentType.prototype;
-            generatedType.prototype = new Surrogate();
-
-            assign(generatedType, parentType);
+        if (ParentType) {
+            var Surrogate = function() { this.constructor = GeneratedType; };
+            Surrogate.prototype = ParentType.prototype;
+            GeneratedType.prototype = new Surrogate();
+            assign(GeneratedType, ParentType);
         }
 
-        staticProperties && assign(generatedType, staticProperties);
-        prototypeProperties && assign(generatedType.prototype, prototypeProperties);
+        staticProperties && assign(GeneratedType, staticProperties);
+        prototypeProperties && assign(GeneratedType.prototype, prototypeProperties);
 
-        return generatedType;
+        return GeneratedType;
+    }
 
+    function hasOwn(obj, key) {
+        return Object.prototype.hasOwnProperty.call(obj, key);
     }
 
     function assign(target, from) {
-
         if (from) {
             for (var key in from) {
-                if (from.hasOwnProperty(key) && typeof from[key] !== 'undefined') {
+                if (hasOwn(from, key) && typeof from[key] !== 'undefined') {
                     target[key] = from[key];
                 }
             }
         }
-
         return target;
-
     }
 
-    return function(prototypeProperties, staticProperties) {
+    var typeFactory = function typeFactory(prototypeProperties, staticProperties) {
 
-        var createdType = factory(null, prototypeProperties, staticProperties);
+        var CreatedType = factory(null, prototypeProperties, staticProperties);
 
-        createdType.extend = function(prototypeProperties, staticProperties) {
-
+        CreatedType.extend = function(prototypeProperties, staticProperties) {
             return factory(this, prototypeProperties, staticProperties);
-
         };
 
-        return createdType;
+        return CreatedType;
 
     };
 
-}));
+    return typeFactory;
+
+})));
